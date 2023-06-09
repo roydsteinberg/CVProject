@@ -1,8 +1,8 @@
 seen_class : 30
 unseen_class : 14
 total_class : 44
-dataset_path : 'data/McGill/'
-saved_model : 'saved_model/McGill/'
+dataset_path : 'Transductive_ZSL_3D_Point_Cloud/data/McGill/'
+saved_model : 'Transductive_ZSL_3D_Point_Cloud/saved_model/McGill/'
 
 epoch : 5 
 batch_size : 64

@@ -1,8 +1,8 @@
 seen_class : 26
 unseen_class : 11
 total_class : 37
-dataset_path : 'data/ScanObjectNN/'
-saved_model : 'saved_model/ScanObjectNN/'
+dataset_path : 'Transductive_ZSL_3D_Point_Cloud/data/ScanObjectNN/'
+saved_model : 'Transductive_ZSL_3D_Point_Cloud/saved_model/ScanObjectNN/'
 
 epoch : 5
 batch_size : 64

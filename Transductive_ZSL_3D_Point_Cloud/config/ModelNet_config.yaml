@@ -1,8 +1,8 @@
 seen_class : 30
 unseen_class : 10
 total_class : 40
-dataset_path : 'data/ModelNet/'
-saved_model : 'saved_model/ModelNet/'
+dataset_path : 'Transductive_ZSL_3D_Point_Cloud/data/ModelNet/'
+saved_model : 'Transductive_ZSL_3D_Point_Cloud/saved_model/ModelNet/'
 
 epoch : 5 
 batch_size : 64
