@@ -44,7 +44,7 @@ model.load_state_dict(torch.load(args.model_path))
 
 data_util = DataUtil(dataset=args.dataset, backbone=args.backbone, config=config)
 if args.method=='CurveNet':
-    data_util = DataUtilCurveNet(dataset=args.dataset, backbone=args.backbone, config=config)
+    data_util = DataUtilCurveNet2(dataset=args.dataset, backbone=args.backbone, config=config)
 data = data_util.get_data()
 
 result = calculate_accuracy_ours(model, data, config)
