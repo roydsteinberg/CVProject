@@ -280,12 +280,13 @@ def train_per_epoch_ours_transductive(model, optimizer, step_batch_size, step_ba
             i1 = 0
         i1 = i1 + 1
         temp = arr_unseen[i1*int(batch_size/2):(i1+1)*int(batch_size/2)]
-        batch_x_visual = data['unlabel_feature'][temp,:]
+        unlabel_feature = np.concatenate((data['seen_feature_test'], data['unseen_feature']), axis=0)
+        batch_x_visual = unlabel_feature[temp,:]
         # visual
         batch_x_visual = torch.from_numpy(batch_x_visual)
         batch_x_visual_unlabel = batch_x_visual.to(device)
         #### transductive loss
-        loss_triplet = transductive_triplet_loss(batch_x_visual_unlabel, batch_x_semantic_proj, alpha=1.1)
+        loss_triplet = transductive_triplet_loss(batch_x_visual_unlabel, batch_x_semantic_proj, batch_size, alpha=1.1)
         loss_hub_trans = hubness_loss_transductive(batch_x_visual_unlabel, batch_x_semantic_proj, config['total_class'])
         loss_GFSL = QFSL_loss_transductive(batch_x_visual_unlabel,batch_x_semantic_proj)
         #### final loss
