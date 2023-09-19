@@ -8,7 +8,7 @@ from scipy.io import loadmat
 import torch
 from torch.utils.data import Dataset
 from torch.utils.data import DataLoader
-from models.curvenet_cls import CurveNet1024
+from models.curvenet_cls import CurveNet512
 from data import ModelNet40
 import torch.nn as nn
 
@@ -46,11 +46,11 @@ def load_data_cls(partition):
 
 def convert_data_to_ZSL():
 
-    model_path = "CurveNet/core/convert/model.pth"
+    model_path = "CurveNet/core/convert/model512.pth"
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    model = CurveNet1024().to(device)
+    model = CurveNet512().to(device)
     model.load_state_dict(torch.load(model_path))
     model = nn.DataParallel(model)
 

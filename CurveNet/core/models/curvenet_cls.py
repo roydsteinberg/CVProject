@@ -41,9 +41,9 @@ class CurveNet(nn.Module):
             nn.Conv1d(512, 1024, kernel_size=1, bias=False),
             nn.BatchNorm1d(1024),
             nn.ReLU(inplace=True))
-        self.conv1 = nn.Linear(1024 * 2, 1024, bias=False)
-        self.conv2 = nn.Linear(1024, num_classes)
-        self.bn1 = nn.BatchNorm1d(1024)
+        self.conv1 = nn.Linear(1024 * 2, 512, bias=False)
+        self.conv2 = nn.Linear(512, num_classes)
+        self.bn1 = nn.BatchNorm1d(512)
         self.dp1 = nn.Dropout(p=0.5)
 
     def forward(self, xyz):
@@ -71,9 +71,9 @@ class CurveNet(nn.Module):
         x = self.conv2(x)
         return x
 
-class CurveNet1024(nn.Module):
+class CurveNet512(nn.Module):
     def __init__(self, num_classes=40, k=20, setting='default'):
-        super(CurveNet1024, self).__init__()
+        super(CurveNet512, self).__init__()
 
         assert setting in curve_config
 
@@ -97,8 +97,8 @@ class CurveNet1024(nn.Module):
             nn.Conv1d(512, 1024, kernel_size=1, bias=False),
             nn.BatchNorm1d(1024),
             nn.ReLU(inplace=True))
-        self.conv1 = nn.Linear(1024 * 2, 1024, bias=False)
-        self.bn1 = nn.BatchNorm1d(1024)
+        self.conv1 = nn.Linear(1024 * 2, 512, bias=False)
+        self.bn1 = nn.BatchNorm1d(512)
 
     def forward(self, xyz):
         l0_points = self.lpfa(xyz, xyz)
