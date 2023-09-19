@@ -21,30 +21,27 @@ Arguments
 parser = argparse.ArgumentParser()
 parser.add_argument('--dataset', type=str, default='ModelNet', choices=['ModelNet', 'ScanObjectNN', 'McGill'], help='name of dataset i.e. ModelNet, ScanObjectNN, McGill')
 parser.add_argument('--backbone', type=str, default='PointConv', choices=['EdgeConv', 'PointAugment', 'PointConv', 'PointNet', 'CurveNet'], help='name of backbone i.e. EdgeConv, PointAugment, PointConv, PointNet')
-parser.add_argument('--method', type=str, default='ours', choices=['ours', 'baseline', 'CurveNet'], help='name of method i.e. ours, baseline')
+parser.add_argument('--method', type=str, default='ours', choices=['ours', 'baseline'], help='name of method i.e. ours, baseline')
 parser.add_argument('--settings', type=str, default='inductive', choices=['inductive', 'transductive'], help='name of settings i.e. inductive, transductive')
 parser.add_argument('--config_path', type=str, required=True, help='configuration path')
 parser.add_argument('--model_path', type=str, required=True, help='model path')
 args = parser.parse_args()
 
-feature_dim = 2048 if args.backbone == 'EdgeConv' else 1024
+feature_dim = 2048 if (args.backbone == 'EdgeConv') else 1024
 
 config_file = open(args.config_path, 'r')
 config = yaml.load(config_file, Loader=yaml.FullLoader)
 print(config)
 
 model = S2F(feature_dim)
-if args.method=='baseline' and args.method=='inductive':
+if args.method=='baseline' and args.settings=='inductive':
     model = F2S(feature_dim)
-if args.method=='CurveNet':
-    model = CurveNet()
 
 model.to(device)
+# path = args.model_path + 'model_' + args.backbone + '_' + args.method + '_' + args.settings + '.pth'
 model.load_state_dict(torch.load(args.model_path))
 
 data_util = DataUtil(dataset=args.dataset, backbone=args.backbone, config=config)
-if args.method=='CurveNet':
-    data_util = DataUtilCurveNet(dataset=args.dataset, backbone=args.backbone, config=config)
 data = data_util.get_data()
 
 result = calculate_accuracy_ours(model, data, config)
