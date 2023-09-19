@@ -27,7 +27,7 @@ parser.add_argument('--config_path', type=str, required=True, help='configuratio
 parser.add_argument('--model_path', type=str, required=True, help='model path')
 args = parser.parse_args()
 
-feature_dim = 2048 if (args.backbone == 'EdgeConv' or args.backbone == 'CurveNet') else 1024
+feature_dim = 2048 if (args.backbone == 'EdgeConv') else 1024
 
 config_file = open(args.config_path, 'r')
 config = yaml.load(config_file, Loader=yaml.FullLoader)
@@ -38,8 +38,8 @@ if args.method=='baseline' and args.settings=='inductive':
     model = F2S(feature_dim)
 
 model.to(device)
-path = args.model_path + 'model_' + args.backbone + '_' + args.method + '_' + args.settings + '.pth'
-model.load_state_dict(torch.load(path))
+# path = args.model_path + 'model_' + args.backbone + '_' + args.method + '_' + args.settings + '.pth'
+model.load_state_dict(torch.load(args.model_path))
 
 data_util = DataUtil(dataset=args.dataset, backbone=args.backbone, config=config)
 data = data_util.get_data()

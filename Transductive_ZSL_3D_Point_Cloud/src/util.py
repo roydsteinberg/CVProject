@@ -111,7 +111,7 @@ def calculate_accuracy_ours(model, data, config):
             batch_x_visual = batch_x_visual.astype(float)
             Distance = np.zeros(config['unseen_class'])
             for k1 in range(config['unseen_class']):
-                Distance[k1] = cosine(np.reshape(batch_x_visual, (2048, )), batch_x_semantic_proj.cpu().detach().numpy()[k1,:])
+                Distance[k1] = cosine(batch_x_visual,batch_x_semantic_proj.cpu().detach().numpy()[k1,:])
             h = np.argmin(Distance) + config['seen_class']
             if h==label:
                 per = per + 1
@@ -130,7 +130,7 @@ def calculate_accuracy_ours(model, data, config):
             batch_x_visual = batch_x_visual.astype(float)
             Distance = np.zeros(config['total_class'])
             for k1 in range(config['total_class']):
-                Distance[k1] = cosine(np.reshape(batch_x_visual, (2048, )), batch_x_semantic_proj.cpu().detach().numpy()[k1,:])
+                Distance[k1] = cosine(batch_x_visual, batch_x_semantic_proj.cpu().detach().numpy()[k1,:])
             h = np.argmin(Distance)
             if h==label:
                 per = per + 1
@@ -145,7 +145,7 @@ def calculate_accuracy_ours(model, data, config):
             batch_x_visual = batch_x_visual.astype(float)
             Distance = np.zeros(config['total_class'])
             for k1 in range(config['total_class']):
-                Distance[k1] = cosine(np.reshape(batch_x_visual, (2048, )), batch_x_semantic_proj.cpu().detach().numpy()[k1,:])
+                Distance[k1] = cosine(batch_x_visual, batch_x_semantic_proj.cpu().detach().numpy()[k1,:])
             h = np.argmin(Distance)
             if h==label:
                 per = per + 1
