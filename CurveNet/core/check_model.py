@@ -11,14 +11,8 @@ def convert_model(model_path, save_path):
 
     model_dict = torch.load(model_path)
 
-    del model_dict['module.bn1.weight']
-    del model_dict['module.bn1.bias']
-    del model_dict['module.bn1.running_mean']
-    del model_dict['module.bn1.running_var']
-    del model_dict['module.bn1.num_batches_tracked']
     del model_dict['module.conv2.bias']
     del model_dict['module.conv2.weight']
-    del model_dict['module.conv1.weight']
 
     model = CurveNet1024().to(device)
     model = nn.DataParallel(model)
@@ -41,7 +35,7 @@ def print_model(model_path):
 
 if __name__ == "__main__":
 
-    model_path = "CurveNet/pretrained/cls/models/model.t7"
+    model_path = "CurveNet/pretrained/cls/models/model.pth"
     save_path = "CurveNet/core/convert/model.pth"
 
     convert_model(model_path, save_path)

@@ -41,9 +41,9 @@ class CurveNet(nn.Module):
             nn.Conv1d(512, 1024, kernel_size=1, bias=False),
             nn.BatchNorm1d(1024),
             nn.ReLU(inplace=True))
-        self.conv1 = nn.Linear(1024 * 2, 512, bias=False)
-        self.conv2 = nn.Linear(512, num_classes)
-        self.bn1 = nn.BatchNorm1d(512)
+        self.conv1 = nn.Linear(1024 * 2, 1024, bias=False)
+        self.conv2 = nn.Linear(1024, num_classes)
+        self.bn1 = nn.BatchNorm1d(1024)
         self.dp1 = nn.Dropout(p=0.5)
 
     def forward(self, xyz):
@@ -97,6 +97,8 @@ class CurveNet1024(nn.Module):
             nn.Conv1d(512, 1024, kernel_size=1, bias=False),
             nn.BatchNorm1d(1024),
             nn.ReLU(inplace=True))
+        self.conv1 = nn.Linear(1024 * 2, 1024, bias=False)
+        self.bn1 = nn.BatchNorm1d(1024)
 
     def forward(self, xyz):
         l0_points = self.lpfa(xyz, xyz)
@@ -118,4 +120,5 @@ class CurveNet1024(nn.Module):
         x_avg = F.adaptive_avg_pool1d(x, 1)
         
         x = torch.cat((x_max, x_avg), dim=1).squeeze(-1)
+        x = F.relu(self.bn1(self.conv1(x).unsqueeze(-1)), inplace=True).squeeze(-1)
         return x

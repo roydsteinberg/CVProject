@@ -46,9 +46,12 @@ def load_data_cls(partition):
 
 def convert_data_to_ZSL():
 
+    model_path = "CurveNet/core/convert/model.pth"
+
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     model = CurveNet1024().to(device)
+    model.load_state_dict(torch.load(model_path))
     model = nn.DataParallel(model)
 
     seen_index   = np.int16([0,3,4,5,6,7,9,10,11,13,15,16,17,18,19,20,21,24,25,26,27,28,29,31,32,34,36,37,38,39])
