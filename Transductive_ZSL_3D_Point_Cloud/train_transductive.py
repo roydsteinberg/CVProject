@@ -7,8 +7,8 @@ import argparse
 import scipy.io
 import torch.optim as optim
 from src.models import *
+from src.models_blip import *
 from src.loss import *
-from src.models import *
 from src.util import *
 from src.datautil import DataUtil
 import yaml
@@ -25,6 +25,7 @@ parser.add_argument('--backbone', type=str, default='PointConv', choices=['EdgeC
 parser.add_argument('--method', type=str, default='ours', choices=['ours', 'baseline'], help='name of method i.e. ours, baseline')
 parser.add_argument('--config_path', type=str, required=True, help='configuration path')
 parser.add_argument('--model_path', type=str, required=True, help='model path')
+parser.add_argument('--wordvec_method', type=str, default='Word2Vec', choices=['Word2Vec', 'BLIP'], help='which language model is used')
 args = parser.parse_args()
 
 feature_dim = 2048 if (args.backbone == 'EdgeConv') else 1024
@@ -41,13 +42,16 @@ amsgrad = True
 eps = 1e-8
 wd = float(config['wd'])
 
-model = S2F(feature_dim)
+if args.wordvec_method == 'Word2Vec':
+    model = S2F(feature_dim)
+elif args.wordvec_method == 'BLIP':
+    model = S2F_BLIP(feature_dim)
 model.to(device)
-path = args.model_path + 'model_' + args.backbone + '_' + args.method + '_inductive.pth'
+path = args.model_path + 'model_' + args.backbone + '_' + args.method + '_inductive_' + args.wordvec_method + '.pth'
 model.load_state_dict(torch.load(path))
 optimizer = optim.Adam(model.parameters(), lr=lr, betas=(0.9, 0.999), weight_decay=wd, eps=eps, amsgrad=amsgrad)
 
-data_util = DataUtil(dataset=args.dataset, backbone=args.backbone, config=config)
+data_util = DataUtil(dataset=args.dataset, backbone=args.backbone, config=config, wordvec_method=args.wordvec_method)
 data =data_util.get_data()
 unlabel_feature =  np.concatenate((data['seen_feature_test'], data['unseen_feature']), axis=0)
 
@@ -69,5 +73,5 @@ for j in range(0,epoch):
 
 if not os.path.exists(args.model_path):
     os.mkdir(args.model_path)
-path = args.model_path + 'model_' + args.backbone + '_' + args.method + '_transductive.pth'
+path = args.model_path + 'model_' + args.backbone + '_' + args.method + '_transductive_' + args.wordvec_method + '.pth'
 torch.save(model.state_dict(), path)

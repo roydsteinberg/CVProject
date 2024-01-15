@@ -2,10 +2,11 @@ import numpy as np
 import scipy.io as sio
 
 class DataUtil():
-    def __init__(self, dataset, backbone, config):
+    def __init__(self, dataset, backbone, config, wordvec_method):
         self.dataset = dataset
         self.backbone = backbone
         self.config = config    
+        self.wordvec_method = wordvec_method
         self.data = {}
     
     def get_unseen_data(self):
@@ -41,7 +42,10 @@ class DataUtil():
         self.data['seen_labels_train_test'] = np.squeeze(self.data['seen_labels_train_test'])
 
     def get_attribute(self):
-        wordvector = sio.loadmat(self.config['dataset_path'] + 'ModelNetwordvector')
+        if self.wordvec_method == 'Word2Vec':
+            wordvector = sio.loadmat(self.config['dataset_path'] + 'ModelNetwordvector')
+        else:
+            wordvector = sio.loadmat(self.config['dataset_path'] + 'BLIPModelNetwordvector')
         if self.dataset == 'ModelNet':
             seen_index =np.int16([0,3,4,5,6,7,9,10,11,13,15,16,17,18,19,20,21,24,25,26,27,28,29,31,32,34,36,37,38,39])
             temp = wordvector['word']

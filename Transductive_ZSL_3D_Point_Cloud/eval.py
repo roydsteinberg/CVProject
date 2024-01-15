@@ -7,8 +7,8 @@ import argparse
 import scipy.io
 import torch.optim as optim
 from src.models import *
+from src.models_blip import *
 from src.loss import *
-from src.models import *
 from src.util import *
 from src.datautil import *
 import yaml
@@ -25,6 +25,7 @@ parser.add_argument('--method', type=str, default='ours', choices=['ours', 'base
 parser.add_argument('--settings', type=str, default='inductive', choices=['inductive', 'transductive'], help='name of settings i.e. inductive, transductive')
 parser.add_argument('--config_path', type=str, required=True, help='configuration path')
 parser.add_argument('--model_path', type=str, required=True, help='model path')
+parser.add_argument('--wordvec_method', type=str, default='Word2Vec', choices=['Word2Vec', 'BLIP'], help='which language model is used')
 args = parser.parse_args()
 
 feature_dim = 2048 if (args.backbone == 'EdgeConv') else 1024
@@ -33,15 +34,20 @@ config_file = open(args.config_path, 'r')
 config = yaml.load(config_file, Loader=yaml.FullLoader)
 print(config)
 
-model = S2F(feature_dim)
-if args.method=='baseline' and args.settings=='inductive':
-    model = F2S(feature_dim)
+if args.wordvec_method == 'Word2Vec':
+    model = S2F(feature_dim)
+    if args.method=='baseline' and args.settings=='inductive':
+        model = F2S(feature_dim)
+elif args.wordvec_method == 'BLIP':
+    model = S2F_BLIP(feature_dim)
+    if args.method=='baseline' and args.settings=='inductive':
+        model = F2S_BLIP(feature_dim)
 
 model.to(device)
 # path = args.model_path + 'model_' + args.backbone + '_' + args.method + '_' + args.settings + '.pth'
 model.load_state_dict(torch.load(args.model_path))
 
-data_util = DataUtil(dataset=args.dataset, backbone=args.backbone, config=config)
+data_util = DataUtil(dataset=args.dataset, backbone=args.backbone, config=config, wordvec_method=args.wordvec_method)
 data = data_util.get_data()
 
 result = calculate_accuracy_ours(model, data, config)
