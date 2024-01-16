@@ -10,7 +10,7 @@ Modified by
 @Time: 2021/1/21 3:10 PM
 """
 
-
+from towhee import pipe, ops, DataCollection
 import os
 import sys
 import glob
@@ -19,6 +19,14 @@ import numpy as np
 import torch
 from torch.utils.data import Dataset
 
+
+model_net40_labels = [
+  'airplane', 'bathtub', 'bed', 'bench', 'bookshelf', 'bottle', 'bowl', 'car', 'chair', 'cone'
+  , 'cup', 'curtain', 'desk', 'door', 'dresser', 'flower_pot', 'glass_box', 'guitar', 'keyboard'
+  , 'lamp', 'laptop', 'mantel', 'monitor', 'night_stand', 'person', 'piano', 'plant', 'radio'
+  , 'range_hood', 'sink', 'sofa', 'stairs', 'stool', 'table', 'tent', 'toilet', 'tv_stand', 'vase'
+  , 'wardrobe', 'xbox'
+]
 
 # change this to your data root
 DATA_DIR = 'CurveNet/data/'
@@ -53,6 +61,36 @@ def load_data_normal(partition):
     label = f['normal'][:].astype('float32')
     f.close()
     return data, label
+
+def load_data_cls_BLIP(partition):
+    download_modelnet40()
+    all_data = []
+    all_label = []
+    text_pipe = (
+        pipe.input('text')
+        .map('text', 'vec', ops.image_text_embedding.blip(model_name='blip_itm_base_coco', modality='text'))
+        .output('text', 'vec')
+    )
+    for h5_name in glob.glob(os.path.join(DATA_DIR, 'modelnet40*hdf5_2048', '*%s*.h5'%partition)):
+        f = h5py.File(h5_name, 'r+')
+        data = f['data'][:].astype('float32')
+        label = f['label'][:].astype('int64')
+        data_injected = []
+        for idx, layer in enumerate(data):
+            label_name = model_net40_labels[label[idx][0]]
+            vowel_check = ''
+            if label_name[0] in ['a', 'o', 'i', 'e', 'u', 'x']:
+                vowel_check = 'n'
+            text = 'a point cloud of a' + vowel_check + ' ' + label_name
+            output = DataCollection(text_pipe(text))
+            front_injection = np.reshape(output[0]['vec'][:-1], (85, 3))
+            data_injected.append(np.insert(layer, 0, front_injection, axis=0))
+        f.close()
+        all_data.append(data_injected)
+        all_label.append(label)
+    all_data = np.concatenate(all_data, axis=0)
+    all_label = np.concatenate(all_label, axis=0)
+    return all_data, all_label
 
 
 def load_data_cls(partition):
@@ -116,6 +154,24 @@ def rotate_pointcloud(pointcloud):
     pointcloud[:,[0,2]] = pointcloud[:,[0,2]].dot(rotation_matrix) # random rotation (x,z)
     return pointcloud
 
+
+class ModelNet40BLIPInjected(Dataset):
+    def __init__(self, num_points, partition='train'):
+        self.data, self.label = load_data_cls_BLIP(partition)
+        self.num_points = num_points
+        self.partition = partition        
+
+    def __getitem__(self, item):
+        pointcloud = self.data[item][:self.num_points]
+        label = self.label[item]
+        if self.partition == 'train':
+            pointcloud = translate_pointcloud(pointcloud)
+            #pointcloud = rotate_pointcloud(pointcloud)
+            np.random.shuffle(pointcloud)
+        return pointcloud, label
+
+    def __len__(self):
+        return self.data.shape[0]
 
 class ModelNet40(Dataset):
     def __init__(self, num_points, partition='train'):

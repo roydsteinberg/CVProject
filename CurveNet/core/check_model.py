@@ -35,8 +35,8 @@ def print_model(model_path):
 
 if __name__ == "__main__":
 
-    model_path = "CurveNet/pretrained/cls/models/model.pth"
-    save_path = "CurveNet/core/convert/model.pth"
+    model_path = "/home/rivkaroy/checkpoints/exp/models/model.pth" # Change model path to match
+    save_path = "CurveNet/core/convert/model.pth" # Change save model path to match
 
     convert_model(model_path, save_path)
 
