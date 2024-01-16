@@ -20,7 +20,7 @@ Arguments
 """
 parser = argparse.ArgumentParser()
 parser.add_argument('--dataset', type=str, default='ModelNet', choices=['ModelNet', 'ScanObjectNN', 'McGill'], help='name of dataset i.e. ModelNet, ScanObjectNN, McGill')
-parser.add_argument('--backbone', type=str, default='PointConv', choices=['EdgeConv', 'PointAugment', 'PointConv', 'PointNet', 'CurveNet'], help='name of backbone i.e. EdgeConv, PointAugment, PointConv, PointNet')
+parser.add_argument('--backbone', type=str, default='PointConv', choices=['EdgeConv', 'PointAugment', 'PointConv', 'PointNet', 'CurveNet', 'CurveNet_BLIP'], help='name of backbone i.e. EdgeConv, PointAugment, PointConv, PointNet')
 parser.add_argument('--method', type=str, default='ours', choices=['ours', 'baseline'], help='name of method i.e. ours, baseline')
 parser.add_argument('--settings', type=str, default='inductive', choices=['inductive', 'transductive'], help='name of settings i.e. inductive, transductive')
 parser.add_argument('--config_path', type=str, required=True, help='configuration path')
