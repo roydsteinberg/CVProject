@@ -20,14 +20,6 @@ import torch
 from torch.utils.data import Dataset
 
 
-model_net40_labels = [
-  'airplane', 'bathtub', 'bed', 'bench', 'bookshelf', 'bottle', 'bowl', 'car', 'chair', 'cone'
-  , 'cup', 'curtain', 'desk', 'door', 'dresser', 'flower_pot', 'glass_box', 'guitar', 'keyboard'
-  , 'lamp', 'laptop', 'mantel', 'monitor', 'night_stand', 'person', 'piano', 'plant', 'radio'
-  , 'range_hood', 'sink', 'sofa', 'stairs', 'stool', 'table', 'tent', 'toilet', 'tv_stand', 'vase'
-  , 'wardrobe', 'xbox'
-]
-
 # change this to your data root
 DATA_DIR = 'CurveNet/data/'
 
@@ -77,11 +69,7 @@ def load_data_cls_BLIP(partition):
         label = f['label'][:].astype('int64')
         data_injected = []
         for idx, layer in enumerate(data):
-            label_name = model_net40_labels[label[idx][0]]
-            vowel_check = ''
-            if label_name[0] in ['a', 'o', 'i', 'e', 'u', 'x']:
-                vowel_check = 'n'
-            text = 'a point cloud of a' + vowel_check + ' ' + label_name
+            text = 'a point cloud of '
             output = DataCollection(text_pipe(text))
             front_injection = np.reshape(output[0]['vec'][:-1], (85, 3))
             data_injected.append(np.insert(layer, 0, front_injection, axis=0))
