@@ -44,8 +44,12 @@ class DataUtil():
     def get_attribute(self):
         if self.wordvec_method == 'Word2Vec':
             wordvector = sio.loadmat(self.config['dataset_path'] + 'ModelNetwordvector')
-        else:
+        elif self.wordvec_method == 'BLIP':
             wordvector = sio.loadmat(self.config['dataset_path'] + 'BLIPModelNetwordvector')
+        elif self.wordvec_method == 'CLIP':
+            wordvector = sio.loadmat(self.config['dataset_path'] + 'CLIPModelNetwordvector')
+        elif self.wordvec_method == 'CLIPDiminished':
+            wordvector = sio.loadmat(self.config['dataset_path'] + 'CLIPDiminishedModelNetwordvector')
         if self.dataset == 'ModelNet':
             seen_index =np.int16([0,3,4,5,6,7,9,10,11,13,15,16,17,18,19,20,21,24,25,26,27,28,29,31,32,34,36,37,38,39])
             temp = wordvector['word']

@@ -8,6 +8,7 @@ import scipy.io
 import torch.optim as optim
 from src.models import *
 from src.models_blip import *
+from src.models_clip import *
 from src.loss import *
 from src.util import *
 from src.datautil import DataUtil
@@ -25,7 +26,7 @@ parser.add_argument('--backbone', type=str, default='PointConv', choices=['EdgeC
 parser.add_argument('--method', type=str, default='ours', choices=['ours', 'baseline'], help='name of method i.e. ours, baseline')
 parser.add_argument('--config_path', type=str, required=True, help='configuration path')
 parser.add_argument('--model_path', type=str)
-parser.add_argument('--wordvec_method', type=str, default='Word2Vec', choices=['Word2Vec', 'BLIP'], help='which language model is used')
+parser.add_argument('--wordvec_method', type=str, default='Word2Vec', choices=['Word2Vec', 'BLIP', 'CLIP', 'CLIPDiminished'], help='which language model is used')
 args = parser.parse_args()
 
 feature_dim = 2048 if (args.backbone == 'EdgeConv') else 1024
@@ -42,10 +43,12 @@ amsgrad = True
 eps = 1e-8
 wd = float(config['wd'])
 
-if args.wordvec_method == 'Word2Vec':
+if args.wordvec_method == 'Word2Vec' or args.wordvec_method == 'CLIPDiminished':
     model = S2F(feature_dim) if args.method=='ours' else F2S(feature_dim)
 elif args.wordvec_method == 'BLIP':
     model = S2F_BLIP(feature_dim) if args.method=='ours' else F2S_BLIP(feature_dim)
+elif args.wordvec_method == 'CLIP':
+    model = S2F_CLIP(feature_dim) if args.method=='ours' else F2S_CLIP(feature_dim)
 model.to(device)
 model.apply(init_weights)
 optimizer = optim.Adam(model.parameters(), lr=lr, betas=(0.9, 0.999), weight_decay=wd, eps=eps, amsgrad=amsgrad)

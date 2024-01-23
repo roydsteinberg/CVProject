@@ -25,14 +25,15 @@ Arguments
 """
 parser = argparse.ArgumentParser()
 parser.add_argument('--dataset', type=str, default='ModelNet', choices=['ModelNet', 'ScanObjectNN', 'McGill'], help='name of dataset i.e. ModelNet, ScanObjectNN, McGill')
-parser.add_argument('--backbone', type=str, default='PointConv', choices=['EdgeConv', 'PointAugment', 'PointConv', 'PointNet', 'CurveNet'], help='name of backbone i.e. EdgeConv, PointAugment, PointConv, PointNet')
+parser.add_argument('--backbone', type=str, default='PointConv', choices=['EdgeConv', 'PointAugment', 'PointConv', 'PointNet', 'CurveNet', 'CurveNet_BLIP'], help='name of backbone i.e. EdgeConv, PointAugment, PointConv, PointNet')
 parser.add_argument('--config_path', type=str, required=True, help='configuration path')
+parser.add_argument('--wordvec_method', type=str, default='Word2Vec', choices=['Word2Vec', 'BLIP'], help='which language model is used')
 args, unknown = parser.parse_known_args()
 
 config_file = open(args.config_path, 'r')
 config = yaml.load(config_file, Loader=yaml.FullLoader)
 
-data_util = DataUtil(dataset=args.dataset, backbone=args.backbone, config=config)
+data_util = DataUtil(dataset=args.dataset, backbone=args.backbone, config=config, wordvec_method=args.wordvec_method)
 data = data_util.get_data()
 
 # Reading the data
@@ -73,4 +74,4 @@ tsne_df = pd.DataFrame(data = tsne_data,
 # Plotting the result of tsne
 sn.scatterplot(data=tsne_df, x='Dim_1', y='Dim_2',
                hue='label', palette="bright")
-plt.savefig("tSNE_CurveNet.png")
+plt.savefig("tSNE_CurveNet_BLIP.png")
