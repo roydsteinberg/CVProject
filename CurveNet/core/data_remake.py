@@ -11,7 +11,7 @@ import torch.nn as nn
 
 def convert_data_to_ZSL():
 
-    model_path = "CurveNet/core/convert/model_BLIP.pth"
+    model_path = "CurveNet/core/convert/model.pth"
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -73,9 +73,9 @@ if __name__ == "__main__":
     
     unseen_data, unseen_labels, seen_train_data, seen_train_labels, seen_test_data, seen_test_labels = convert_data_to_ZSL()
 
-    savemat('Transductive_ZSL_3D_Point_Cloud/data/ModelNet/CurveNet_BLIP/unseen_ModelNet10.mat', {'data': unseen_data}) # Change save data path to match
-    savemat('Transductive_ZSL_3D_Point_Cloud/data/ModelNet/CurveNet_BLIP/unseen_ModelNet10_label.mat', {'label': unseen_labels}) # Change save data path to match
-    savemat('Transductive_ZSL_3D_Point_Cloud/data/ModelNet/CurveNet_BLIP/seen_train.mat', {'data': seen_train_data}) # Change save data path to match
-    savemat('Transductive_ZSL_3D_Point_Cloud/data/ModelNet/CurveNet_BLIP/seen_train_label.mat', {'label': seen_train_labels}) # Change save data path to match
-    savemat('Transductive_ZSL_3D_Point_Cloud/data/ModelNet/CurveNet_BLIP/seen_test.mat', {'data': seen_test_data}) # Change save data path to match
-    savemat('Transductive_ZSL_3D_Point_Cloud/data/ModelNet/CurveNet_BLIP/seen_test_label.mat', {'label': seen_test_labels}) # Change save data path to match
+    savemat('Transductive_ZSL_3D_Point_Cloud/data/ModelNet/CurveNet/unseen_ModelNet10.mat', {'data': unseen_data}) # Change save data path to match
+    savemat('Transductive_ZSL_3D_Point_Cloud/data/ModelNet/CurveNet/unseen_ModelNet10_label.mat', {'label': unseen_labels}) # Change save data path to match
+    savemat('Transductive_ZSL_3D_Point_Cloud/data/ModelNet/CurveNet/seen_train.mat', {'data': seen_train_data}) # Change save data path to match
+    savemat('Transductive_ZSL_3D_Point_Cloud/data/ModelNet/CurveNet/seen_train_label.mat', {'label': seen_train_labels}) # Change save data path to match
+    savemat('Transductive_ZSL_3D_Point_Cloud/data/ModelNet/CurveNet/seen_test.mat', {'data': seen_test_data}) # Change save data path to match
+    savemat('Transductive_ZSL_3D_Point_Cloud/data/ModelNet/CurveNet/seen_test_label.mat', {'label': seen_test_labels}) # Change save data path to match

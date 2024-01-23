@@ -74,4 +74,4 @@ tsne_df = pd.DataFrame(data = tsne_data,
 # Plotting the result of tsne
 sn.scatterplot(data=tsne_df, x='Dim_1', y='Dim_2',
                hue='label', palette="bright")
-plt.savefig("tSNE_CurveNet_BLIP.png")
+plt.savefig("tSNE_CurveNet.png")
