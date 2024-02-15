@@ -6,7 +6,7 @@ To do so 3 different methods were attempted:
 
 - Changing the classifier to CurveNet.
 - Modifying CurveNet's training data to include a text embedding as well.
-- Substituting the text embedding with either BLIP(https://arxiv.org/abs/2201.12086), CLIP(https://arxiv.org/abs/2103.00020), or a truncated version of CLIP.
+- Substituting the text embedding with either [BLIP](https://arxiv.org/abs/2201.12086), [CLIP](https://arxiv.org/abs/2103.00020), or a truncated version of CLIP.
 
 # Getting Started
 
